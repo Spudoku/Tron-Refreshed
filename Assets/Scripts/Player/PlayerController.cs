@@ -70,6 +70,7 @@ public class PlayerController : NetworkBehaviour
 
     void FixedUpdate()
     {
+
         if (!IsOwner) return;
         Move();
     }
