@@ -1,3 +1,5 @@
+using System.Globalization;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -5,7 +7,7 @@ using UnityEngine.InputSystem;
 //largely stolen from dave/gamedevelopment yt channel (thanks!)
 //essentially 
 
-public class CameraControl : MonoBehaviour
+public class CameraControl : NetworkBehaviour
 {
 
     public float sensX;
@@ -27,8 +29,9 @@ public class CameraControl : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
+        if (!IsOwner) return;
         float mouseX = Input.GetAxisRaw("Mouse X") * Time.deltaTime * sensX;
         float mouseY = Input.GetAxisRaw("Mouse Y") * Time.deltaTime * sensY;
 
