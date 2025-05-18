@@ -3,11 +3,10 @@ using UnityEngine.InputSystem;
 
 
 //largely stolen from dave/gamedevelopment yt channel (thanks!)
-//also sort of adapted from the lukeskt's implementation
+//essentially 
+
 public class CameraControl : MonoBehaviour
 {
-    [SerializeField]
-    private InputActionAsset _actions;
 
     public float sensX;
     public float sensY;
@@ -29,6 +28,14 @@ public class CameraControl : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //float mouseX = Input.GetAxisRaw("")
+        float mouseX = Input.GetAxisRaw("Mouse X") * Time.deltaTime * sensX;
+        float mouseY = Input.GetAxisRaw("Mouse Y") * Time.deltaTime * sensY;
+
+        yRotation += mouseX;
+        xRotation -= mouseY;
+        xRotation = Mathf.Clamp(xRotation, -90f, 90f);
+        transform.localRotation = Quaternion.Euler(xRotation, yRotation, 0);
+        orientation.localRotation = Quaternion.Euler(0, yRotation, 0);
+
     }
 }
