@@ -7,6 +7,7 @@ using Unity.Netcode;
 //ADAPTED to get this thing working aaaaaaaaagh
 public class PlayerController : NetworkBehaviour
 {
+    public Camera playerCamera;
     [Header("Base setup")]
     public float walkingSpeed = 7.5f;
     public float runningSpeed = 11.5f;
@@ -24,7 +25,7 @@ public class PlayerController : NetworkBehaviour
 
     [SerializeField]
     private float cameraYOffset = 0.4f;
-   // private Camera playerCamera;
+    // private Camera playerCamera;
 
 
     //public override void OnStartClient()
@@ -49,12 +50,17 @@ public class PlayerController : NetworkBehaviour
         // Lock cursor
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+        if (!IsOwner && playerCamera != null)
+        {
+            playerCamera.enabled = false;
+            playerCamera.GetComponent<AudioListener>().enabled = false;
+        }
     }
 
 
     void FixedUpdate()
     {
-        //if (!IsOwner) return;
+        if (!IsOwner) return;
         Move();
     }
 
