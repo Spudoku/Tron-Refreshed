@@ -5,10 +5,14 @@ public class PlayerStats : NetworkBehaviour
 {
     [SerializeField] private PlayerController pc;
     [SerializeField] private Collider hitbox;
+    [SerializeField] private Transform shootPoint;
 
     [SerializeField] private PlayerName playerName;
     [SerializeField] NetworkVariable<float> maxHP;
     [SerializeField] NetworkVariable<float> curHP;
+    [SerializeField] Camera cam;
+
+    [SerializeField] private Raycast raycast;
 
     public override void OnNetworkSpawn()
     {
@@ -33,4 +37,15 @@ public class PlayerStats : NetworkBehaviour
     {
 
     }
+
+    void Update()
+    {
+        // Firing raycasts
+        if (!IsOwner) return;
+        if (Input.GetButtonDown("Fire1"))
+        {
+            raycast.ShootRay(cam);
+        }
+    }
+
 }
