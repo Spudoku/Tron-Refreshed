@@ -16,32 +16,76 @@ public class CameraControl : NetworkBehaviour
     public Transform orientation;
     public Transform playerRoot;
 
+    public NetworkVariable<Vector2> syncedRotation = new NetworkVariable<Vector2>();
+
+
     float xRotation;
     float yRotation;
+
+    public delegate void LookDelegate();
+    LookDelegate lookMode;
+
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
 
     //lock the cursor to the center, hide it becuase first person
-    void Start()
+    public override void OnNetworkSpawn()
     {
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
+        //Cursor.lockState = CursorLockMode.Locked;
+        //Cursor.visible = false;
+
+
+        if(IsOwner)
+        {
+            lookMode = localViewMode;
+        } else if(IsServer) {
+            lookMode = replicateViewMode;
+        }
     }
 
     // Update is called once per frame
     void FixedUpdate()
     {
-        if (!IsOwner) return;
+        lookMode();
+    }
+
+    
+    void localViewMode()
+    {
+
+        //force this to update client side first
         float mouseX = Input.GetAxisRaw("Mouse X") * Time.deltaTime * sensX;
         float mouseY = Input.GetAxisRaw("Mouse Y") * Time.deltaTime * sensY;
 
         yRotation += mouseX;
         xRotation -= mouseY;
         xRotation = Mathf.Clamp(xRotation, -90f, 90f);
-   
+
+
+
         transform.localRotation = Quaternion.Euler(xRotation, 0, 0);
         playerRoot.localRotation = Quaternion.Euler(0, yRotation, 0);
         orientation.localRotation = Quaternion.Euler(xRotation, 0, 0);
+
+        SubmitRotationRequestRpc(xRotation, yRotation);
+
+        transform.localRotation = Quaternion.Euler(xRotation, 0, 0);
+        playerRoot.localRotation = Quaternion.Euler(0, yRotation, 0);
+        orientation.localRotation = Quaternion.Euler(xRotation, 0, 0);
+    }
+
+
+    [Rpc(SendTo.Server)]
+    private void SubmitRotationRequestRpc(float xRotation, float yRotation)
+    {
+        this.xRotation = xRotation;
+        this.yRotation = yRotation;
+    }
+    
+
+
+    void replicateViewMode()
+    {
 
     }
 }

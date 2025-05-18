@@ -18,7 +18,6 @@ public class PlayerController : NetworkBehaviour
 
     CharacterController characterController;
     Vector3 moveDirection = Vector3.zero;
-    float rotationX = 0;
     public Transform orientation;
     [HideInInspector]
     public bool canMove = true;
@@ -26,6 +25,17 @@ public class PlayerController : NetworkBehaviour
     [SerializeField]
     private float cameraYOffset = 0.4f;
     // private Camera playerCamera;
+
+    public NetworkVariable<float> serverXLook = 
+        new NetworkVariable<float>(0f, 
+            NetworkVariableReadPermission.Everyone, 
+            NetworkVariableWritePermission.Server);
+
+    public NetworkVariable<float> serverYLook = 
+        new NetworkVariable<float>(0f, 
+            NetworkVariableReadPermission.Everyone, 
+            NetworkVariableWritePermission.Server);
+
 
 
     //public override void OnStartClient()
