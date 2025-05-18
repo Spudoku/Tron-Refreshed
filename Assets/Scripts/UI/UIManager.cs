@@ -17,6 +17,7 @@ public class UIManager : MonoBehaviour
 
     void Start()
     {
+        DontDestroyOnLoad(this.gameObject);
         hostButton.onClick.AddListener(Host);
         joinButton.onClick.AddListener(Join);
         menuCam.enabled = true;
@@ -27,22 +28,38 @@ public class UIManager : MonoBehaviour
 
     void Host()
     {
-        NetworkManager.Singleton.StartHost();
+        bool success = NetworkManager.Singleton.StartHost();
+        Debug.Log("[UIManager] StartHost test...");
+        Debug.Log("[UIManager] StartHost result: " + success);
+
+        if (!success)
+        {
+            Debug.LogError("StartHost FAILED — check NetworkManager setup!");
+            return;
+        }
         //menu.SetActive(false);
         menuCam.enabled = false;
         gameInfoText.gameObject.SetActive(true);
         gameInfoText.text = "Press Enter to Start";
-        SceneManager.LoadScene(SceneManager.GetSceneByBuildIndex(1).name);
+        NetworkManager.Singleton.SceneManager.LoadScene("SampleScene", LoadSceneMode.Single);
     }
 
     void Join()
     {
-        NetworkManager.Singleton.StartClient();
+        bool success = NetworkManager.Singleton.StartClient();
+        Debug.Log("[UIManager] StartClient result: " + success);
+
+        if (!success)
+        {
+            Debug.LogError("StartClient FAILED — check NetworkManager setup!");
+            return;
+        }
+
         //menu.SetActive(false);
         menuCam.enabled = false;
         gameInfoText.gameObject.SetActive(true);
         gameInfoText.text = "Waiting for Host...";
-        SceneManager.LoadScene(SceneManager.GetSceneByBuildIndex(1).name);
+        NetworkManager.Singleton.SceneManager.LoadScene("SampleScene", LoadSceneMode.Single);
 
     }
 }
