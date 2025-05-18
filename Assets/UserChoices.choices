@@ -20,7 +20,7 @@ MonoBehaviour:
       - Fast
     - QuestionId: Cheating
       Answers:
-      - CheatingImportant
+      - CheatingNotImportant
     - QuestionId: CostSensitivity
       Answers:
       - BestExperience
