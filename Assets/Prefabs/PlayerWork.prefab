@@ -611,7 +611,7 @@ MonoBehaviour:
   gravity: 20
   lookSpeed: 2
   lookXLimit: 45
-  orientation: {fileID: 7594597158267961944}
+  orientation: {fileID: 9134090271819839692}
   canMove: 1
   cameraYOffset: 0.4
 --- !u!114 &571020921927972042
