@@ -1,6 +1,7 @@
 using TMPro;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 // Code from this tutorial: https://www.youtube.com/watch?v=SZjpm950g_c
@@ -27,19 +28,21 @@ public class UIManager : MonoBehaviour
     void Host()
     {
         NetworkManager.Singleton.StartHost();
-        menu.SetActive(false);
+        //menu.SetActive(false);
         menuCam.enabled = false;
         gameInfoText.gameObject.SetActive(true);
         gameInfoText.text = "Press Enter to Start";
+        SceneManager.LoadScene(SceneManager.GetSceneByBuildIndex(1).name);
     }
 
     void Join()
     {
         NetworkManager.Singleton.StartClient();
-        menu.SetActive(false);
+        //menu.SetActive(false);
         menuCam.enabled = false;
         gameInfoText.gameObject.SetActive(true);
         gameInfoText.text = "Waiting for Host...";
+        SceneManager.LoadScene(SceneManager.GetSceneByBuildIndex(1).name);
 
     }
 }
