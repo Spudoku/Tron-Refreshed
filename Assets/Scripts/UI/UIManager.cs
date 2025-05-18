@@ -31,6 +31,7 @@ public class UIManager : MonoBehaviour
         bool success = NetworkManager.Singleton.StartHost();
         Debug.Log("[UIManager] StartHost test...");
         Debug.Log("[UIManager] StartHost result: " + success);
+        NetworkManager.Singleton.SceneManager.OnLoadComplete += OnSceneLoadComplete;
 
         if (!success)
         {
@@ -42,11 +43,13 @@ public class UIManager : MonoBehaviour
         gameInfoText.gameObject.SetActive(true);
         gameInfoText.text = "Press Enter to Start";
         NetworkManager.Singleton.SceneManager.LoadScene("SampleScene", LoadSceneMode.Single);
+
     }
 
     void Join()
     {
         bool success = NetworkManager.Singleton.StartClient();
+        NetworkManager.Singleton.SceneManager.OnLoadComplete += OnSceneLoadComplete;
         Debug.Log("[UIManager] StartClient result: " + success);
 
         if (!success)
@@ -61,5 +64,18 @@ public class UIManager : MonoBehaviour
         gameInfoText.text = "Waiting for Host...";
         NetworkManager.Singleton.SceneManager.LoadScene("SampleScene", LoadSceneMode.Single);
 
+    }
+
+    private void OnSceneLoadComplete(ulong clientId, string sceneName, LoadSceneMode mode)
+    {
+        if (clientId != NetworkManager.Singleton.LocalClientId) return;
+
+        Debug.Log($"[UIManager] Scene '{sceneName}' loaded for client {clientId}");
+
+        // This is where you can:
+        // - Activate player controls
+        // - Enable physics
+        // - Spawn UI
+        // - Play a sound, etc.
     }
 }
