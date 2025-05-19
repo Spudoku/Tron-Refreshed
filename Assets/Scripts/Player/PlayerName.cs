@@ -21,9 +21,16 @@ public class PlayerName : NetworkBehaviour
     {
         if (IsOwner)
         {
-            string inputName = FindFirstObjectByType<UIManager>().GetComponent<UIManager>().nameInputField.text;
+            UIManager uIManager = FindFirstObjectByType<UIManager>();
+            if (uIManager != null)
+            {
+                string inputName = uIManager.GetComponent<UIManager>().nameInputField.text;
+                networkPlayerName.Value = new FixedString32Bytes(inputName);
+            }
 
-            networkPlayerName.Value = new FixedString32Bytes(inputName);
+
+
+
         }
 
         playerName.text = networkPlayerName.Value.ToString();
