@@ -15,16 +15,22 @@ public class Raycast : NetworkBehaviour
         bool hitSomething = Physics.Raycast(ray, out RaycastHit hit);
         if (hitSomething)
         {
-            SpawnHitMarkerServerRpc(hit.point);
+            SpawnHitMarkerServerRpc(hit.point, OwnerClientId);
         }
     }
 
     // Spawn a hitmarker
     [ServerRpc]
-    private void SpawnHitMarkerServerRpc(Vector3 hit)
+    private void SpawnHitMarkerServerRpc(Vector3 hit, ulong clientId)
     {
+        Debug.Log($"[Raycast] my owner is {OwnerClientId}");
         Debug.Log("hit something!");
         GameObject hitspot = Instantiate(hitMarker, hit, Quaternion.identity);
+        if (IsOwner)
+        {
+            hitspot.GetComponent<GenericHitmarker>().spawnerClientId = clientId;
+        }
+
         hitspot.GetComponent<NetworkObject>().Spawn();
     }
 }

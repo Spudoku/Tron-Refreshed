@@ -18,6 +18,7 @@ public class PlayerStats : NetworkBehaviour
     {
         // initialize everything?
         curHP = maxHP;
+        Debug.Log($"[PlayerStats] my owner is {OwnerClientId}");
     }
 
     public void ChangeHP(float amount)
