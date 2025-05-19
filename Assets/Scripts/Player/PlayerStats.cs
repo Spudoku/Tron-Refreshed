@@ -13,6 +13,7 @@ public class PlayerStats : NetworkBehaviour
     [SerializeField] Camera cam;
 
     [SerializeField] private Raycast raycast;
+    [SerializeField] private FireProjectile fireProjectile;
 
     public override void OnNetworkSpawn()
     {
@@ -46,6 +47,10 @@ public class PlayerStats : NetworkBehaviour
         if (Input.GetButtonDown("Fire1"))
         {
             raycast.ShootRay(cam);
+        }
+        if (Input.GetButtonDown("Fire2"))
+        {
+            fireProjectile.ShootServerRpc();
         }
     }
 

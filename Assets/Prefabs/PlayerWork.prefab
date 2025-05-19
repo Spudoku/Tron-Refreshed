@@ -724,6 +724,7 @@ GameObject:
   - component: {fileID: -7037060368943847648}
   - component: {fileID: 1784129395485746341}
   - component: {fileID: 6870763768582511670}
+  - component: {fileID: 7370807032680242249}
   m_Layer: 0
   m_Name: PlayerWork
   m_TagString: Untagged
@@ -799,6 +800,7 @@ MonoBehaviour:
     m_InternalValue: 0
   cam: {fileID: 8885807521617922628}
   raycast: {fileID: 6870763768582511670}
+  fireProjectile: {fileID: 7370807032680242249}
 --- !u!143 &5460982539772842237
 CharacterController:
   m_ObjectHideFlags: 0
@@ -959,4 +961,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1b51c1720a4604a488d2e9318ece4d82, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
   hitMarker: {fileID: 2961445583603045091, guid: 181f04c456e727140b19de9c96422ced, type: 3}
+--- !u!114 &7370807032680242249
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7964026741115944445}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a1c82cb011abacf4e85cd737b56aeaab, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
+  projectile: {fileID: 8954005972157958962, guid: 156c893cda4218446905851aa0ec1368, type: 3}
+  shootTransform: {fileID: 7594597158267961944}
