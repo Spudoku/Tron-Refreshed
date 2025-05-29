@@ -4,7 +4,7 @@ public class SpawnManager : MonoBehaviour
 {
     [SerializeField] private GameObject[] spawnPoints;
     [SerializeField] private GameObject[] jailPoints;
-    private static SpawnManager Instance;
+    public static SpawnManager Instance;
 
     private void Awake()
     {
@@ -18,7 +18,7 @@ public class SpawnManager : MonoBehaviour
         }
 
         spawnPoints = GameObject.FindGameObjectsWithTag("SpawnPoint");
-        jailPoints = GameObject.FindGameObjectsWithTag("JailBox");
+        jailPoints = GameObject.FindGameObjectsWithTag("JailPoint");
         Debug.Log("[SpawnManager] initialized!");
     }
 
