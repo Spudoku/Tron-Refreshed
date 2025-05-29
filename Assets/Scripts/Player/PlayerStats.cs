@@ -1,8 +1,10 @@
+using System.Collections;
 using Unity.Netcode;
 using UnityEngine;
 
 public class PlayerStats : NetworkBehaviour
 {
+    [SerializeField] private static float respawnTime = 10f;
     [SerializeField] private PlayerController pc;
     [SerializeField] private Collider hitbox;
     [SerializeField] private Transform shootPoint;
@@ -41,6 +43,15 @@ public class PlayerStats : NetworkBehaviour
     private void Die()
     {
 
+    }
+
+    private IEnumerator RespawnSequence()
+    {
+        SpawnManager.Instance.TeleportToJail(gameObject);
+
+        yield return new WaitForSeconds(respawnTime);
+
+        SpawnManager.Instance.TeleportToRandomSpawnPoint(gameObject);
     }
 
     void Update()
