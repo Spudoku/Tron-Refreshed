@@ -1,6 +1,7 @@
+using Unity.Netcode;
 using UnityEngine;
 
-public class SpawnManager : MonoBehaviour
+public class SpawnManager : NetworkBehaviour
 {
     [SerializeField] private GameObject[] spawnPoints;
     [SerializeField] private GameObject[] jailPoints;
@@ -22,33 +23,15 @@ public class SpawnManager : MonoBehaviour
         Debug.Log("[SpawnManager] initialized!");
     }
 
-    private void TeleportTo(GameObject go, GameObject location)
+
+
+    public Vector3 GetRandomSpawnPoint()
     {
-        if (location == null)
-        {
-            Debug.Log("[TeleportTo] teleport failed: no valid location points");
-            return;
-        }
-        else if (go == null)
-        {
-            Debug.Log("[TeleportTo] teleport failed: invalid teleporting object");
-        }
-        go.transform.position = location.transform.position;
+        return spawnPoints[Random.Range(0, spawnPoints.Length)].transform.position;
     }
 
-    public void TeleportToRandomSpawnPoint(GameObject go)
+    public Vector3 GetRandomJailPoint()
     {
-        int index = Random.Range(0, spawnPoints.Length);
-
-        TeleportTo(go, spawnPoints[index]);
+        return jailPoints[Random.Range(0, jailPoints.Length)].transform.position;
     }
-
-    public void TeleportToJail(GameObject go)
-    {
-        int index = Random.Range(0, jailPoints.Length);
-
-        TeleportTo(go, jailPoints[index]);
-    }
-
-
 }

@@ -1,5 +1,7 @@
 using System.Collections;
 using Unity.Netcode;
+using Unity.Netcode.Components;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class PlayerStats : NetworkBehaviour
@@ -14,6 +16,8 @@ public class PlayerStats : NetworkBehaviour
     [SerializeField] NetworkVariable<float> curHP;
     [SerializeField] Camera cam;
 
+    public bool isDead = false;
+
     [SerializeField] private Raycast raycast;
     //[SerializeField] private FireProjectile fireProjectile;
 
@@ -24,7 +28,15 @@ public class PlayerStats : NetworkBehaviour
         Debug.Log($"[PlayerStats] my owner is {OwnerClientId}");
 
         // teleport to spawn point
-        SpawnManager.Instance.TeleportToRandomSpawnPoint(gameObject);
+        StartCoroutine(DelayedInitSpawn());
+
+        isDead = false;
+    }
+
+    private IEnumerator DelayedInitSpawn()
+    {
+        yield return new WaitForSeconds(0.1f);
+        TeleportToSpawnPoint();
     }
 
     public void ChangeHP(float amount)
@@ -42,16 +54,23 @@ public class PlayerStats : NetworkBehaviour
 
     private void Die()
     {
-
+        if (isDead)
+        {
+            return;
+        }
+        isDead = true;
+        StartCoroutine(RespawnSequence());
+        isDead = false;
     }
 
     private IEnumerator RespawnSequence()
     {
-        SpawnManager.Instance.TeleportToJail(gameObject);
-
+        yield return null; // Wait one frame to ensure transform state is ready
+        //SpawnManager.Instance.TeleportToJail(gameObject);
+        TeleportToJail();
         yield return new WaitForSeconds(respawnTime);
-
-        SpawnManager.Instance.TeleportToRandomSpawnPoint(gameObject);
+        TeleportToSpawnPoint();
+        //SpawnManager.Instance.TeleportToRandomSpawnPoint(gameObject);
     }
 
     void Update()
@@ -66,6 +85,60 @@ public class PlayerStats : NetworkBehaviour
         {
             //fireProjectile.ShootServerRpc();
         }
+
+        if (Input.GetKeyDown(KeyCode.P))
+        {
+            DieServerRpc();
+        }
     }
 
+    [ClientRpc]
+    public void TeleportClientRpc(Vector3 position, ClientRpcParams rpcParams)
+    {
+        if (!IsOwner) return;
+        NetworkObject netObj = GetComponent<NetworkObject>();
+        NetworkTransform netTrans = GetComponent<NetworkTransform>();
+        if (netObj != null)
+        {
+            netTrans.Teleport(position, Quaternion.identity, transform.localScale);
+        }
+
+
+    }
+
+    private void TeleportToJail()
+    {
+        var position = SpawnManager.Instance.GetRandomJailPoint();
+
+        var rpcParams = new ClientRpcParams
+        {
+            Send = new ClientRpcSendParams
+            {
+                TargetClientIds = new[] { OwnerClientId }
+            }
+        };
+
+        TeleportClientRpc(position, rpcParams);
+    }
+
+    private void TeleportToSpawnPoint()
+    {
+        var position = SpawnManager.Instance.GetRandomSpawnPoint();
+
+        var rpcParams = new ClientRpcParams
+        {
+            Send = new ClientRpcSendParams
+            {
+                TargetClientIds = new[] { OwnerClientId }
+            }
+        };
+
+        TeleportClientRpc(position, rpcParams);
+    }
+
+    [ServerRpc]
+    private void DieServerRpc()
+    {
+        Die();
+    }
 }

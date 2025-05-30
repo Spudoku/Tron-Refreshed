@@ -26,14 +26,14 @@ public class PlayerController : NetworkBehaviour
     private float cameraYOffset = 0.4f;
     // private Camera playerCamera;
 
-    public NetworkVariable<float> serverXLook = 
-        new NetworkVariable<float>(0f, 
-            NetworkVariableReadPermission.Everyone, 
+    public NetworkVariable<float> serverXLook =
+        new NetworkVariable<float>(0f,
+            NetworkVariableReadPermission.Everyone,
             NetworkVariableWritePermission.Server);
 
-    public NetworkVariable<float> serverYLook = 
-        new NetworkVariable<float>(0f, 
-            NetworkVariableReadPermission.Everyone, 
+    public NetworkVariable<float> serverYLook =
+        new NetworkVariable<float>(0f,
+            NetworkVariableReadPermission.Everyone,
             NetworkVariableWritePermission.Server);
 
 
@@ -68,7 +68,7 @@ public class PlayerController : NetworkBehaviour
     }
 
 
-    void FixedUpdate()
+    void Update()
     {
 
         if (!IsOwner) return;
