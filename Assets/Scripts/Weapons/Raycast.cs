@@ -12,10 +12,27 @@ public class Raycast : NetworkBehaviour
         Vector3 point = new(cam.pixelWidth / 2, cam.pixelHeight / 2, 0);
         Ray ray = cam.ScreenPointToRay(point);
 
-        bool hitSomething = Physics.Raycast(ray, out RaycastHit hit);
-        if (hitSomething)
+
+
+        if (Physics.Raycast(ray, out RaycastHit hit))
         {
+            Debug.Log($"[ShootRay] Hit object: {hit.collider.gameObject.name}, Layer: {hit.collider.gameObject.layer}");
+
             SpawnHitMarkerServerRpc(hit.point, OwnerClientId);
+            var playerStats = hit.collider.gameObject.GetComponentInParent<PlayerStats>();
+
+            if (playerStats != null)
+            {
+                Debug.Log($"[ShootRay] hit player: {playerStats.gameObject.name}");
+                playerStats.DieServerRpc();
+
+
+            }
+            else
+            {
+                Debug.Log($"[ShootRay] did not hit player");
+            }
+
         }
     }
 

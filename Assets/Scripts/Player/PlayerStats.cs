@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class PlayerStats : NetworkBehaviour
 {
-    [SerializeField] private static float respawnTime = 10f;
+    [SerializeField] private static float respawnTime = 5f;
     [SerializeField] private PlayerController pc;
     [SerializeField] private Collider hitbox;
     [SerializeField] private Transform shootPoint;
@@ -56,7 +56,7 @@ public class PlayerStats : NetworkBehaviour
         }
     }
 
-    private void Die()
+    public void Die()
     {
         if (isDead)
         {
@@ -67,10 +67,18 @@ public class PlayerStats : NetworkBehaviour
         isDead = false;
     }
 
+    [ServerRpc(RequireOwnership = false)]
+    public void DieServerRpc()
+    {
+        Die();
+    }
+
     private IEnumerator RespawnSequence()
     {
         yield return null; // Wait one frame to ensure transform state is ready
-        //SpawnManager.Instance.TeleportToJail(gameObject);
+                           //SpawnManager.Instance.TeleportToJail(gameObject);
+        var position = SpawnManager.Instance.GetRandomJailPoint();
+
         TeleportToJail();
         yield return new WaitForSeconds(respawnTime);
         TeleportToSpawnPoint();
@@ -80,7 +88,8 @@ public class PlayerStats : NetworkBehaviour
     void Update()
     {
         // Firing raycasts
-        if (!IsOwner) return;
+        if (!IsOwner || isDead) return;
+
         if (Input.GetButtonDown("Fire1"))
         {
             raycast.ShootRay(cam);
@@ -90,10 +99,10 @@ public class PlayerStats : NetworkBehaviour
             //fireProjectile.ShootServerRpc();
         }
 
-        if (Input.GetKeyDown(KeyCode.P))
-        {
-            DieServerRpc();
-        }
+        // if (Input.GetKeyDown(KeyCode.P))
+        // {
+        //     DieServerRpc();
+        // }
     }
 
     [ClientRpc]
@@ -110,10 +119,35 @@ public class PlayerStats : NetworkBehaviour
 
     }
 
+    // private void TeleportToJail()
+    // {
+    //     var position = SpawnManager.Instance.GetRandomJailPoint();
+    //     var netTransform = GetComponent<NetworkTransform>();
+    //     if (netTransform != null)
+    //     {
+    //         netTransform.Teleport(position, Quaternion.identity, transform.localScale);
+    //     }
+    // }
+
+    // private void TeleportToSpawnPoint()
+    // {
+    //     var position = SpawnManager.Instance.GetRandomSpawnPoint();
+    //     var netTransform = GetComponent<NetworkTransform>();
+    //     if (netTransform != null)
+    //     {
+    //         netTransform.Teleport(position, Quaternion.identity, transform.localScale);
+    //     }
+    // }
+
+
     private void TeleportToJail()
     {
         var position = SpawnManager.Instance.GetRandomJailPoint();
-
+        // var netTransform = GetComponent<NetworkTransform>();
+        // if (netTransform != null)
+        // {
+        //     netTransform.Teleport(position, Quaternion.identity, transform.localScale);
+        // }
         var rpcParams = new ClientRpcParams
         {
             Send = new ClientRpcSendParams
@@ -140,9 +174,5 @@ public class PlayerStats : NetworkBehaviour
         TeleportClientRpc(position, rpcParams);
     }
 
-    [ServerRpc]
-    private void DieServerRpc()
-    {
-        Die();
-    }
+
 }
