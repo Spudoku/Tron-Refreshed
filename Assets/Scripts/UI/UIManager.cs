@@ -15,6 +15,8 @@ public class UIManager : MonoBehaviour
 
     [SerializeField] Camera menuCam;
 
+    [SerializeField] string level;
+
     void Start()
     {
         DontDestroyOnLoad(this.gameObject);
@@ -42,7 +44,7 @@ public class UIManager : MonoBehaviour
         menuCam.enabled = false;
         gameInfoText.gameObject.SetActive(true);
         gameInfoText.text = "Press Enter to Start";
-        NetworkManager.Singleton.SceneManager.LoadScene("SampleScene", LoadSceneMode.Single);
+        NetworkManager.Singleton.SceneManager.LoadScene(level, LoadSceneMode.Single);
 
     }
 
@@ -62,7 +64,7 @@ public class UIManager : MonoBehaviour
         menuCam.enabled = false;
         gameInfoText.gameObject.SetActive(true);
         gameInfoText.text = "Waiting for Host...";
-        NetworkManager.Singleton.SceneManager.LoadScene("SampleScene", LoadSceneMode.Single);
+        NetworkManager.Singleton.SceneManager.LoadScene(level, LoadSceneMode.Single);
 
     }
 
