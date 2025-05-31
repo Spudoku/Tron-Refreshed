@@ -8,6 +8,7 @@ using Unity.Services.Relay.Models;
 using Unity.Netcode.Transports.UTP;
 using Unity.Services.Core;
 using Unity.Services.Authentication;
+using System.Collections;
 
 
 
@@ -21,7 +22,7 @@ public class UIManager : MonoBehaviour
 
     [SerializeField] public TMP_InputField joinCodeInputField;
 
-    [SerializeField] public TextMeshProUGUI joinCodeText;
+    [SerializeField] public TMP_InputField joinCodeText;
     [SerializeField] GameObject menu;
 
     [SerializeField] Camera menuCam;
@@ -51,6 +52,7 @@ public class UIManager : MonoBehaviour
 
     }
 
+
     async void Host()
     {
         // bool success = NetworkManager.Singleton.StartHost();
@@ -69,6 +71,8 @@ public class UIManager : MonoBehaviour
             var allocation = await RelayService.Instance.CreateAllocationAsync(3);
             var joinCode = await RelayService.Instance.GetJoinCodeAsync(allocation.AllocationId);
             var useWebSockets = Application.platform == RuntimePlatform.WebGLPlayer;
+
+
             if (useWebSockets)
             {
                 NetworkManager.Singleton.GetComponent<UnityTransport>().UseWebSockets = true;
@@ -84,20 +88,14 @@ public class UIManager : MonoBehaviour
 
             NetworkManager.Singleton.GetComponent<UnityTransport>().SetRelayServerData(relayServerData);
 
-            menuCam.enabled = false;
+
             gameInfoText.gameObject.SetActive(true);
 
             joinCodeText.text = $"Join Code: {joinCode}";
             gameInfoText.text = "Press Enter to Start";
-            if (NetworkManager.Singleton.StartHost())
-            {
-                Debug.Log("[UIManager] Loading scene: " + level);
-                NetworkManager.Singleton.SceneManager.LoadScene(level, LoadSceneMode.Single);
-            }
-            else
-            {
-                Debug.LogError("[UIManager] Failed to start host.");
-            }
+            StartCoroutine(HostWaitUntilEnter());
+
+
 
 
         }
@@ -109,11 +107,37 @@ public class UIManager : MonoBehaviour
 
     }
 
+    public IEnumerator HostWaitUntilEnter()
+    {
+        while (!Input.GetKeyDown(KeyCode.Return))
+        {
+            yield return null;
+        }
+
+        if (NetworkManager.Singleton.StartHost())
+        {
+            // menuCam.enabled = false;
+            Debug.Log("[UIManager] Loading scene: " + level);
+            NetworkManager.Singleton.SceneManager.LoadScene(level, LoadSceneMode.Single);
+
+        }
+        else
+        {
+            Debug.LogError("[UIManager] Failed to start host.");
+        }
+    }
+
     async void Join()
     {
         try
         {
-            string joinCode = nameInputField.text.Trim();
+            string joinCode = joinCodeInputField.text.Trim().ToUpper();
+
+            if (joinCode.Length != 6)
+            {
+                Debug.LogError("[UIManager] Invalid join code. Must be 6 characters.");
+                return;
+            }
 
             if (string.IsNullOrEmpty(joinCode))
             {
@@ -139,7 +163,7 @@ public class UIManager : MonoBehaviour
 
             NetworkManager.Singleton.GetComponent<UnityTransport>().SetRelayServerData(relayServerData);
             //menu.SetActive(false);
-            menuCam.enabled = false;
+            //menuCam.enabled = false;
             gameInfoText.gameObject.SetActive(true);
             gameInfoText.text = "Waiting for Host...";
 
