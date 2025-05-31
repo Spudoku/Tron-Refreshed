@@ -35,7 +35,11 @@ public class PlayerStats : NetworkBehaviour
 
     private IEnumerator DelayedInitSpawn()
     {
-        yield return new WaitForSeconds(0.1f);
+        // wait until SpawnManager is ready
+        while (SpawnManager.Instance == null || SpawnManager.Instance.GetRandomSpawnPoint() == Vector3.zero)
+        {
+            yield return null;
+        }
         TeleportToSpawnPoint();
     }
 

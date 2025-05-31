@@ -20901,10 +20901,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
-  spawnPoints:
-  - {fileID: 0}
-  jailPoints:
-  - {fileID: 0}
+  spawnPoints: []
+  jailPoints: []
 --- !u!114 &1814450339
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -23824,7 +23822,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4118805209876676787, guid: a250f5b536bdd1744ba471a87bafd9a5, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1.5
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 4118805209876676787, guid: a250f5b536bdd1744ba471a87bafd9a5, type: 3}
       propertyPath: m_LocalPosition.z
@@ -23877,7 +23875,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1674625331086629345, guid: 4e5588593cbad574784636f51d759f97, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1.5
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 1674625331086629345, guid: 4e5588593cbad574784636f51d759f97, type: 3}
       propertyPath: m_LocalPosition.z

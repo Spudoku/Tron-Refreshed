@@ -18,6 +18,10 @@ public class UIManager : MonoBehaviour
     [SerializeField] public TextMeshProUGUI gameInfoText;
     [SerializeField] Button hostButton;
     [SerializeField] Button joinButton;
+
+    [SerializeField] public TMP_InputField joinCodeInputField;
+
+    [SerializeField] public TextMeshProUGUI joinCodeText;
     [SerializeField] GameObject menu;
 
     [SerializeField] Camera menuCam;
@@ -82,8 +86,9 @@ public class UIManager : MonoBehaviour
 
             menuCam.enabled = false;
             gameInfoText.gameObject.SetActive(true);
-            gameInfoText.text = "Press Enter to Start";
 
+            joinCodeText.text = $"Join Code: {joinCode}";
+            gameInfoText.text = "Press Enter to Start";
             if (NetworkManager.Singleton.StartHost())
             {
                 Debug.Log("[UIManager] Loading scene: " + level);
@@ -116,7 +121,7 @@ public class UIManager : MonoBehaviour
                 return;
             }
 
-            var allocation = await RelayService.Instance.CreateAllocationAsync(3);
+            var allocation = await RelayService.Instance.JoinAllocationAsync(joinCode);
 
             var useWebSockets = Application.platform == RuntimePlatform.WebGLPlayer;
             if (useWebSockets)
@@ -137,7 +142,15 @@ public class UIManager : MonoBehaviour
             menuCam.enabled = false;
             gameInfoText.gameObject.SetActive(true);
             gameInfoText.text = "Waiting for Host...";
-            NetworkManager.Singleton.SceneManager.LoadScene(level, LoadSceneMode.Single);
+
+            bool result = NetworkManager.Singleton.StartClient(); // ✅ Start client before doing anything else
+
+            if (!result)
+            {
+                Debug.LogError("[UIManager] Failed to start client!");
+            }
+
+            //NetworkManager.Singleton.SceneManager.LoadScene(level, LoadSceneMode.Single);
         }
         catch (RelayServiceException e)
         {
