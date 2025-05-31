@@ -799,8 +799,8 @@ MonoBehaviour:
   curHP:
     m_InternalValue: 0
   cam: {fileID: 8885807521617922628}
+  isDead: 0
   raycast: {fileID: 6870763768582511670}
-  fireProjectile: {fileID: 7370807032680242249}
 --- !u!143 &5460982539772842237
 CharacterController:
   m_ObjectHideFlags: 0
@@ -933,7 +933,7 @@ MonoBehaviour:
   SyncPositionY: 1
   SyncPositionZ: 1
   SyncRotAngleX: 0
-  SyncRotAngleY: 0
+  SyncRotAngleY: 1
   SyncRotAngleZ: 0
   SyncScaleX: 0
   SyncScaleY: 0
